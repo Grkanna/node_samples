@@ -1,3 +1,4 @@
+require('dotenv').config()
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -7,7 +8,8 @@ var bodyParser = require('body-parser')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var testAPIRouter = require('./routes/testAPI')
+var loginRouter = require('./routes/login')
+var employeeRouter = require('./routes/employee')
 var cors = require('cors')
 
 var app = express();
@@ -22,10 +24,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
 app.use(cors({origin: '*'}))
+app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/testAPI', testAPIRouter)
+app.use('/login', loginRouter)
+app.use('/employee', employeeRouter)
 app.use(bodyParser.json())
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

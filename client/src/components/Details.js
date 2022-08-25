@@ -9,6 +9,13 @@ function Details(props) {
 :''};
     const [userDetails, setUserDetails] = useState([])
 
+    const config = {
+        headers: {
+            "Content-type": "application/json",
+             "Authorization": `Bearer ${localStorage.getItem('userAuth')}`
+        }
+   }
+
     useEffect ( () => {
         let filterType = '';
         checkValues.filter((checkedItem) => {
@@ -18,7 +25,7 @@ function Details(props) {
                 filterType = "employeename"
             } 
         })
-        axios.post('http://localhost:5000/testAPI/employee', {filterType, search})
+        axios.post('http://localhost:5000/employee', {filterType, search}, config)
         .then((json) => {
             console.log('details', json.data.userData)
             setUserDetails(json.data.userData)

@@ -19,8 +19,6 @@ function Login() {
 
     useEffect(() => {
         inputUserName.current.focus()
-        // inputPassword.current.focus()
-
         return () => console.log("I am destroyed")
     }, [])
 
@@ -33,12 +31,12 @@ function Login() {
         setWelcomeText("");
     }
     const loginCheck = () => {
-        axios.post('http://localhost:5000/testAPI', {Username, Password})
+        axios.post('http://localhost:5000/login', {Username, Password})
         .then((json) =>{
-            console.log('json', json)
             if (json.data.success === 1) {
                 setWelcomeText(JSONdetails.welcomeText);
                 setloginSuccess(true);
+                localStorage.setItem('userAuth', json.data.accessToken)
                 history.push('/home')
             }
             else {

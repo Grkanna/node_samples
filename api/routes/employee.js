@@ -1,43 +1,14 @@
 const express = require('express')
 const connection = require('../script')
-// const cors = require('cors')
 const router = express.Router()
-console.log('connection', connection)
+const { authenticateToken } =  require('../jwtAuhtorization');
 
-router.post('/', (req, res) => {
-    console.log('req', req.body)
+router.post('/', authenticateToken, (req, res) => {
     new Promise((resolve, reject) => {
-        let returnData = {}
-        connection.query({ sql: 'SELECT * FROM users WHERE username = ? AND userpassword = ?'}, [req.body.Username, req.body.Password], (err, result) => {
-            if (err) {
-                return reject(console.log('err', err))
-            }
-            if(result) {
-                returnData = {
-                    message: "User Exists",
-                    userData: result
-                }
-            } else {
-                returnData = {
-                    message: "user not exists",
-                }
-            }
-            return resolve(res.json({
-                success: 1,
-                ...returnData
-            }))
-        })
-    })
-})
-
-router.post('/employee', (req, res) => {
-    new Promise((resolve, reject) => {
-        console.log('req.body', req.body)
         let sql = 'SELECT * FROM userdetails WHERE 1=1 '
         if (req.body.filterType) {
             sql = sql + `AND ${req.body.filterType} LIKE '%${req.body.search}%'`
         }
-        console.log('sql', sql)
         connection.query({sql}, (err, result) => {
             if (err) {
                 return reject(console.log('err', err))
@@ -60,7 +31,7 @@ router.post('/employee', (req, res) => {
     })
 })
 
-router.post('/addUser', (req, res) => {
+router.post('/addUser', authenticateToken, (req, res) => {
     new Promise((resolve, reject) => {
         console.log('req.body', req.body)
         let sql = `INSERT INTO userdetails( userid, employeename, age, designation, place, image ) VALUES ( 1, '${req.body.userName}', '${req.body.age}', '${req.body.designation}', '${req.body.place}', '${req.body.image}' )`
@@ -87,5 +58,6 @@ router.post('/addUser', (req, res) => {
         })
     })
 })
+
 
 module.exports = router
